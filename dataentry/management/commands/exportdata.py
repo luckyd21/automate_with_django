@@ -2,7 +2,7 @@ from django.core.management import BaseCommand,CommandError
 from dataentry.models import Student
 from django.apps import apps
 import csv
-import datetime
+from dataentry.utils import generate_csv_file
  
 #proposed command = python manage.py exportdata model_name
 class Command(BaseCommand):
@@ -25,16 +25,10 @@ class Command(BaseCommand):
             self.stdout.write(f'Model {model_name} could not found')
             return
         data = model.objects.all()
-
-                
         
-        #generate timestamp of current date and time
-        timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-
-
-        #define the csv file name/path
-        file_path = f'exported_students_data{timestamp}.csv'
-
+        #generate csv file path
+        file_path =generate_csv_file(model_name)
+        
         # open the csv file and write
         with open(file_path, 'w', newline='') as file:
             writer = csv.writer(file)
